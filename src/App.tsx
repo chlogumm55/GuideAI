@@ -18,15 +18,17 @@ interface Settings {
   spoken: boolean;
 }
 
+// Updated Logo matching Prototype Compass Icon
 function Logo() {
   return (
     <div className="logo">
-      <div className="logo-icon">✦</div>
-      <span>GuideAI</span>
+      <div className="logo-icon-compass">🧭</div>
+      <span className="logo-text">GuideAI</span>
     </div>
   );
 }
 
+// Updated Header with Profile Tag
 function Header({
   onHome,
   onAccessibility,
@@ -40,13 +42,16 @@ function Header({
         <Logo />
       </button>
 
-      <button
-        className="accessibility-header-button"
-        onClick={onAccessibility}
-        title="Customize text size, contrast, font, and spoken responses"
-      >
-        ♿ Accessibility
-      </button>
+      <div className="header-right">
+        <button
+          className="accessibility-header-button"
+          onClick={onAccessibility}
+          title="Customize text size, contrast, font, and spoken responses"
+        >
+          ♿ Accessibility
+        </button>
+        <div className="user-profile-badge">Chloie</div>
+      </div>
     </header>
   );
 }
@@ -62,11 +67,8 @@ function HomeScreen({
     <div className="screen home-screen">
       <div className="home-card">
         <Logo />
-
         <p className="welcome-text">Welcome, Chloie</p>
-
         <h1>Your AI guide, made simple.</h1>
-
         <p className="home-description">
           Get clear, easy-to-understand answers, with your control, your way.
         </p>
@@ -77,21 +79,18 @@ function HomeScreen({
             title="Simplify"
             description="Make complex information easier to understand."
           />
-
           <Feature
             icon="≡"
             title="Summarize"
             description="Get the key points, quickly."
           />
-
           <Feature
             icon="?"
             title="Explain"
             description="Learn step by step, with examples."
           />
-
           <Feature
-            icon="👤"
+            icon="🛡️"
             title="You're in control"
             description="Review, edit, and decide."
           />
@@ -127,9 +126,7 @@ function Feature({
   return (
     <div className="feature-card">
       <div className="feature-icon">{icon}</div>
-
       <h3>{title}</h3>
-
       <p>{description}</p>
     </div>
   );
@@ -172,9 +169,58 @@ function ChatScreen({
           </button>
         </div>
 
-        <div className="input-card">
-          <label htmlFor="question">Ask GuideAI a question</label>
+        {message && (
+          <div className="chat-bubble user-bubble">
+            <p>{message}</p>
+            <span className="timestamp">10:24 AM</span>
+          </div>
+        )}
 
+        {response && (
+          <div className="chat-bubble ai-bubble">
+            <div className="response-header">
+              <span className="ai-label">AI-generated response</span>
+            </div>
+            <p className="response-text">{response}</p>
+            <span className="timestamp">10:24 AM</span>
+
+            <div className="refinement-buttons-horizontal">
+              <button
+                className="chip-button"
+                onClick={() => onMode("simplify")}
+              >
+                Simplify
+              </button>
+              <button
+                className="chip-button"
+                onClick={() => onMode("summarize")}
+              >
+                Summarize
+              </button>
+              <button
+                className="chip-button"
+                onClick={() => onMode("explain")}
+              >
+                Explain
+              </button>
+            </div>
+
+            <div className="review-callout">
+              <div>
+                <strong>Review before using</strong>
+                <p>
+                  GuideAI generates the response, but you decide whether it is
+                  accurate and appropriate to use.
+                </p>
+              </div>
+              <button className="secondary-button" onClick={onReview}>
+                Review Response
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="input-card">
           <div className="message-row">
             <input
               id="question"
@@ -182,13 +228,10 @@ function ChatScreen({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  onSend();
-                }
+                if (e.key === "Enter") onSend();
               }}
               placeholder="Type your message..."
             />
-
             <button
               className="primary-button"
               onClick={onSend}
@@ -198,80 +241,6 @@ function ChatScreen({
             </button>
           </div>
         </div>
-
-        {response && (
-          <div className="response-card">
-            <div className="response-header">
-              <h2>GuideAI Response</h2>
-
-              <span className="ai-label">
-                AI-generated response
-              </span>
-            </div>
-
-            <p className="response-text">{response}</p>
-
-            <div className="refinement-section">
-              <p className="refinement-title">
-                Need to change the response?
-              </p>
-
-              <p className="refinement-help">
-                Choose an option below. Hover over each option to see what it
-                does.
-              </p>
-
-              <div className="refinement-buttons">
-                <button
-                  className="refinement-button"
-                  onClick={() => onMode("simplify")}
-                  title="Simplify: rewrite the response using easier language"
-                >
-                  <strong>Simplify</strong>
-                  <span>Use easier language</span>
-                </button>
-
-                <button
-                  className="refinement-button"
-                  onClick={() => onMode("summarize")}
-                  title="Summarize: shorten the response to the most important points"
-                >
-                  <strong>Summarize</strong>
-                  <span>Shorten to key points</span>
-                </button>
-
-                <button
-                  className="refinement-button"
-                  onClick={() => onMode("explain")}
-                  title="Explain: provide more detail or clarification"
-                >
-                  <strong>Explain</strong>
-                  <span>Give more detail</span>
-                </button>
-              </div>
-            </div>
-
-            <div className="review-callout">
-              <div className="review-callout-icon">👤</div>
-
-              <div>
-                <strong>Review before using</strong>
-
-                <p>
-                  GuideAI generates the response, but you decide whether it is
-                  accurate and appropriate to use.
-                </p>
-              </div>
-
-              <button
-                className="secondary-button"
-                onClick={onReview}
-              >
-                Review Response
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -302,13 +271,9 @@ function RefineScreen({
         </button>
 
         <div className="refine-card">
-          <p className="small-label">GuideAI</p>
-
           <h1>Refine response</h1>
-
           <p className="page-description">
-            You can edit the AI's response or ask for changes before deciding
-            whether to use it.
+            You can edit the AI's response or ask for changes.
           </p>
 
           <div className="ai-response-label">
@@ -322,24 +287,13 @@ function RefineScreen({
           />
 
           <div className="refine-actions">
-            <button
-              className="secondary-button"
-              onClick={onRegenerate}
-            >
+            <button className="secondary-button" onClick={onRegenerate}>
               Regenerate
             </button>
-
-            <button
-              className="secondary-button"
-              onClick={onRequestChanges}
-            >
+            <button className="secondary-button" onClick={onRequestChanges}>
               Request Changes
             </button>
-
-            <button
-              className="primary-button"
-              onClick={onApprove}
-            >
+            <button className="primary-button" onClick={onApprove}>
               Approve & Use
             </button>
           </div>
@@ -370,63 +324,36 @@ function ReviewScreen({
         </button>
 
         <div className="review-card">
-          <div className="review-title-area">
-            <p className="small-label">GuideAI</p>
+          <div className="review-header-icon">🛡️</div>
+          <h1>Review Before Using</h1>
+          <p className="page-description">
+            You can make changes, ask for more details, or approve the response.
+          </p>
 
-            <h1>Review Before Using</h1>
-
-            <span className="ai-label">
-              AI-generated response
-            </span>
-          </div>
-
-          <div className="why-review-box">
-            <div className="why-review-icon">!</div>
-
-            <div>
-              <h3>Why should I review this?</h3>
-
-              <p>
-                AI can sometimes misunderstand a question, leave out
-                information, or provide an incorrect answer. Review the
-                response before using it so you can make the final decision.
-              </p>
-            </div>
-          </div>
-
-          <div className="review-response">
-            <h3>Response</h3>
-
+          <div className="ai-response-block">
+            <span className="ai-label">AI-generated response</span>
             <p>{response}</p>
           </div>
 
           <div className="review-actions">
-            <button
-              className="secondary-button"
-              onClick={onEdit}
-            >
+            <button className="primary-button" onClick={onApprove}>
+              Approve
+            </button>
+            <button className="secondary-button" onClick={onEdit}>
               Edit
             </button>
-
-            <button
-              className="secondary-button"
-              onClick={onRequestChanges}
-            >
+            <button className="secondary-button" onClick={onRequestChanges}>
               Request Changes
-            </button>
-
-            <button
-              className="primary-button"
-              onClick={onApprove}
-            >
-              Approve
             </button>
           </div>
 
-          <p className="responsibility-note">
-            GuideAI provides assistance, but you remain in control of the
-            final response.
-          </p>
+          <div className="why-response-box">
+            <h3>Why this response?</h3>
+            <p>
+              We used reliable government sources and the latest BMV information
+              to create this response.
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -437,35 +364,30 @@ function AccessibilityScreen({
   settings,
   setSettings,
   onSave,
+  onNavigate,
 }: {
   settings: Settings;
   setSettings: (settings: Settings) => void;
   onSave: () => void;
+  onNavigate: (screen: Screen) => void;
 }) {
   return (
-    <div className="screen">
+    <div className="screen accessibility-layout">
+      <nav className="settings-sidebar">
+        <button onClick={() => onNavigate("chat")}>💬 Chat</button>
+        <button className="active">♿ Accessibility</button>
+        <button onClick={() => onNavigate("feedback")}>💬 Feedback</button>
+      </nav>
+
       <div className="accessibility-container">
         <div className="accessibility-card">
-          <button className="back-button" onClick={onSave}>
-            ← Back to chat
-          </button>
-
-          <p className="small-label">GuideAI</p>
-
           <h1>Accessibility Settings</h1>
-
           <p className="page-description">
-            Make GuideAI work best for you. These settings change how
-            information is displayed and delivered.
+            Make GuideAI work best for you.
           </p>
 
           <div className="settings-section">
             <h2>Text Size</h2>
-
-            <p>
-              Choose the text size that is easiest for you to read.
-            </p>
-
             <div className="setting-options">
               {[
                 ["small", "Small"],
@@ -493,11 +415,6 @@ function AccessibilityScreen({
 
           <div className="settings-section">
             <h2>Higher Contrast</h2>
-
-            <p>
-              Increase contrast between the text, buttons, and background.
-            </p>
-
             <label className="toggle-row">
               <input
                 type="checkbox"
@@ -509,18 +426,12 @@ function AccessibilityScreen({
                   })
                 }
               />
-
               <span>Enable higher contrast</span>
             </label>
           </div>
 
           <div className="settings-section">
             <h2>Font Style</h2>
-
-            <p>
-              Choose a font that is comfortable for you to read.
-            </p>
-
             <select
               value={settings.font}
               onChange={(e) =>
@@ -538,12 +449,6 @@ function AccessibilityScreen({
 
           <div className="settings-section">
             <h2>Spoken Response</h2>
-
-            <p>
-              Allow GuideAI to read responses aloud using your browser's
-              built-in speech feature.
-            </p>
-
             <label className="toggle-row">
               <input
                 type="checkbox"
@@ -555,15 +460,11 @@ function AccessibilityScreen({
                   })
                 }
               />
-
               <span>Enable spoken responses</span>
             </label>
           </div>
 
-          <button
-            className="primary-button save-settings"
-            onClick={onSave}
-          >
+          <button className="primary-button save-settings" onClick={onSave}>
             Save Changes
           </button>
         </div>
@@ -575,39 +476,69 @@ function AccessibilityScreen({
 function FeedbackScreen({
   feedback,
   setFeedback,
+  submitted,
   onSubmit,
+  onBack,
 }: {
   feedback: string;
   setFeedback: (value: string) => void;
+  submitted: boolean;
   onSubmit: () => void;
+  onBack: () => void;
 }) {
   return (
     <div className="screen">
       <div className="feedback-container">
-        <div className="feedback-card">
-          <p className="small-label">GuideAI</p>
+        {!submitted ? (
+          <div className="feedback-card">
+            <p className="small-label">GuideAI</p>
+            <h1>Your feedback</h1>
+            <p className="page-description">
+              Tell GuideAI what was missing or what could be improved.
+            </p>
 
-          <h1>Your feedback</h1>
+            <textarea
+              className="feedback-input"
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              placeholder="Example: The response was missing information about renewal fees."
+            />
 
-          <p className="page-description">
-            Tell GuideAI what was missing or what could be improved.
-          </p>
+            <button
+              className="primary-button"
+              onClick={onSubmit}
+              disabled={!feedback.trim()}
+            >
+              Submit Feedback
+            </button>
+          </div>
+        ) : (
+          <div className="feedback-confirmation-card">
+            <div className="robot-icon">🤖</div>
+            <h1>Thanks for your feedback!</h1>
+            <p>
+              Your input helps GuideAI provide better, more accurate responses
+              over time.
+            </p>
 
-          <textarea
-            className="feedback-input"
-            value={feedback}
-            onChange={(e) => setFeedback(e.target.value)}
-            placeholder="Example: The response was missing information about renewal fees."
-          />
+            <div className="feedback-summary-box">
+              <strong>Your feedback</strong>
+              <p>"{feedback}"</p>
+            </div>
 
-          <button
-            className="primary-button"
-            onClick={onSubmit}
-            disabled={!feedback.trim()}
-          >
-            Submit Feedback
-          </button>
-        </div>
+            <div className="updated-response-box">
+              <strong>Response Updated</strong>
+              <p>
+                We've added the missing details and improved the explanation
+                based on your feedback.
+              </p>
+            </div>
+
+            <button className="primary-button" onClick={onBack}>
+              Back to Chat
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -620,6 +551,7 @@ function App() {
   const [response, setResponse] = useState("");
   const [editText, setEditText] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -638,21 +570,18 @@ function App() {
     setLoading(true);
 
     try {
-      const res = await fetch(
-        "http://localhost:5000/api/guideai",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            message: userMessage,
-            mode,
-            existingResponse,
-            feedback,
-          }),
-        }
-      );
+      const res = await fetch("http://localhost:5000/api/guideai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: userMessage,
+          mode,
+          existingResponse,
+          feedback,
+        }),
+      });
 
       if (!res.ok) {
         throw new Error("GuideAI request failed.");
@@ -663,21 +592,13 @@ function App() {
       setResponse(data.reply);
       setEditText(data.reply);
 
-      if (
-        settings.spoken &&
-        "speechSynthesis" in window
-      ) {
+      if (settings.spoken && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
-
-        const speech = new SpeechSynthesisUtterance(
-          data.reply
-        );
-
+        const speech = new SpeechSynthesisUtterance(data.reply);
         window.speechSynthesis.speak(speech);
       }
     } catch (error) {
       console.error(error);
-
       setResponse(
         "GuideAI could not connect to the local AI model. Make sure Ollama is running and the GuideAI server is started."
       );
@@ -688,7 +609,6 @@ function App() {
 
   const sendMessage = async () => {
     if (!message.trim()) return;
-
     await callGuideAI(message, "normal");
   };
 
@@ -720,13 +640,7 @@ function App() {
     if (!changes?.trim()) return;
 
     await callGuideAI(
-      `Update the following AI response based on this user feedback:
-
-User feedback:
-${changes}
-
-Current response:
-${editText}`,
+      `Update the following AI response based on this user feedback:\n\nUser feedback:\n${changes}\n\nCurrent response:\n${editText}`,
       "normal",
       editText
     );
@@ -756,10 +670,7 @@ ${editText}`,
     .join(" ");
 
   return (
-    <div
-      className={appClassName}
-      style={{ fontFamily: settings.font }}
-    >
+    <div className={appClassName} style={{ fontFamily: settings.font }}>
       <Header
         onHome={() => setScreen("home")}
         onAccessibility={() => setScreen("accessibility")}
@@ -815,6 +726,7 @@ ${editText}`,
           settings={settings}
           setSettings={setSettings}
           onSave={saveAccessibility}
+          onNavigate={(target) => setScreen(target)}
         />
       )}
 
@@ -822,9 +734,12 @@ ${editText}`,
         <FeedbackScreen
           feedback={feedback}
           setFeedback={setFeedback}
-          onSubmit={() => {
-            setScreen("chat");
+          submitted={feedbackSubmitted}
+          onSubmit={() => setFeedbackSubmitted(true)}
+          onBack={() => {
+            setFeedbackSubmitted(false);
             setFeedback("");
+            setScreen("chat");
           }}
         />
       )}
